@@ -162,6 +162,10 @@ spec:
         - mountPath: /bitnami/wordpress
           name: wordpress-data
           subPath: wordpress
+        {{- if .Values.customPHPini }}
+        - mountPath: /opt/bitnami/php/lib/php.ini
+          name: php.ini
+        {{- end }}
         {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
         - mountPath: /opt/bitnami/wordpress/wordpress-htaccess.conf
           name: custom-htaccess
@@ -196,6 +200,11 @@ spec:
 {{ toYaml .Values.sidecars | indent 6 }}
 {{- end }}
       volumes:
+      {{- if .Values.customPHPini }}
+      - name: php.ini
+        configMap:
+          name: {{ .Values.customPHPini }}
+      {{- end }}
       {{- if and .Values.allowOverrideNone .Values.customHTAccessCM}}
       - name: custom-htaccess
         configMap:
